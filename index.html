@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Senk Craft — Minecraft сервер</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root {
+  --bg: radial-gradient(circle at top, #1b0000, #050000);
+  --glass: rgba(0,0,0,0.45);
+  --border: rgba(255,200,120,0.35);
+  --text: #fff2d6;
+  --gold: #ffcc66;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Press Start 2P', cursive;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.page {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 0;
+}
+
+.hidden { display: none; }
+
+.container {
+  width: 90%;
+  max-width: 520px;
+  padding: 46px 30px;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 34px;
+  backdrop-filter: blur(28px);
+  text-align: left;
+}
+
+.logo {
+  font-size: 28px;
+  color: var(--gold);
+  text-shadow: 0 0 18px rgba(255,200,120,0.6);
+  text-align: center;
+}
+
+.desc {
+  margin: 24px 0 0 0; /* чуть ниже */
+  font-size: 9px;
+  line-height: 1.8;
+  opacity: 0.85;
+  text-align: center; /* по центру */
+}
+
+.sub {
+  margin-top: 12px; /* чуть ниже */
+  font-size: 10px;
+  opacity: 0.75;
+  text-align: center; /* по центру */
+}
+
+.buttons {
+  margin-top: 44px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.btn {
+  padding: 24px;
+  border-radius: 22px;
+  background: rgba(255,180,60,0.14);
+  border: 1px solid var(--border);
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  transition: all 0.35s ease;
+  cursor: pointer;
+  justify-content: flex-start; /* текст выровнен влево */
+}
+
+.btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  background: rgba(255,200,120,0.22);
+}
+
+.btn-small {
+  font-size: 8px;
+  opacity: 0.7;
+}
+
+/* Первая кнопка уникальная двухстрочная */
+.btn.first {
+  flex-direction: column;
+  justify-content: center;
+  height: 64px;
+  padding: 12px 18px;
+  gap: 4px;
+  align-items: flex-start; /* только кнопка слева */
+}
+
+/* Кнопка купить в донате */
+.donat-square .btn {
+  padding: 6px 12px;
+  border-radius: 14px;
+  font-size: 10px;
+  background: rgba(255,180,60,0.14);
+  border: 1px solid rgba(255,200,120,0.35);
+  display: inline-flex;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.donat-square .btn:hover {
+  background: rgba(255,200,120,0.22);
+  transform: translateY(-2px);
+}
+
+.weather {
+  margin-top: 36px;
+  display: flex;
+  justify-content: center;
+  gap: 26px;
+  font-size: 10px;
+  position: relative;
+}
+
+.weather span {
+  cursor: pointer;
+  opacity: 0.7;
+  transition: 0.3s;
+}
+
+.weather span:hover { opacity: 1; }
+
+.rules {
+  text-align: left;
+  font-size: 10px;
+  line-height: 1.9;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+.rules h2 {
+  text-align: center;
+  color: var(--gold);
+  margin-bottom: 24px;
+}
+
+.donat-container {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.donat-square {
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(255,180,60,0.14);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.donat-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.donat-title {
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.price-discount {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.donat-price {
+  font-size: 9px;
+  background: rgba(255,180,60,0.22);
+  padding: 6px 8px;
+  border-radius: 8px;
+  text-align: center;
+  width: fit-content;
+}
+
+.donat-discount {
+  font-size: 9px;
+  color: #ff5555;
+}
+
+.up-btn {
+  margin-top: 18px;
+  display: inline-block;
+  font-size: 10px;
+  cursor: pointer;
+  color: var(--gold);
+  text-decoration: underline;
+}
+</style>
+</head>
+<body>
+
+<canvas id="weather"></canvas>
+
+<!-- MAIN -->
+<div class="page" id="main">
+  <div class="container">
+    <div class="logo">SENK CRAFT</div>
+
+    <div class="desc">
+      Ванильный сервер для вайбового выживания с друзьями.<br>
+      Строй, развивайся и воплощай
+    </div>
+
+    <div class="sub">Java / Bedrock</div>
+
+    <div class="buttons">
+      <!-- Первая кнопка уникальная двухстрочная -->
+     <a class="btn first" href="https://t.me/SenkCraft" target="_blank">
+  <div class="btn-small">IP тут ↓</div>
+  <div><i class="fa-brands fa-telegram"></i> Канал сервера</div>
+
+</a>
+
+
+      <!-- Остальные кнопки с иконкой перед текстом -->
+      <a class="btn" href="https://t.me/SenkChat" target="_blank">
+  <i class="fa-brands fa-telegram"></i> Чат сервера
+</a>
+
+      <a class="btn" href="https://www.tiktok.com/@Senk_Chat" target="_blank">
+  <i class="fa-brands fa-tiktok"></i> Тикток сервера
+</a>
+
+      <a class="btn" onclick="openRules()"><i class="fa-solid fa-book"></i> Правила сервера</a>
+      <a class="btn" onclick="openDonat()"><i class="fa-solid fa-ruble-sign"></i> Донат</a>
+      <a class="btn" href="https://t.me/SanyaDur" target="_blank"><i class="fa-solid fa-user"></i> Связаться с поддержкой</a>
+    </div>
+
+    <div class="weather">
+      <span onclick="setWeather('rain')">Дождь</span>
+      <span onclick="setWeather('snow')">Снег</span>
+      <span onclick="setWeather('off')">Выкл</span>
+    </div>
+  </div>
+</div>
+
+<!-- RULES -->
+<div class="page hidden" id="rules">
+  <div class="container">
+    <div class="rules" id="rulesText">
+      <h2>Правила сервера</h2>
+      1. Запрещены оскорбления в адрес администрации, а также любые формы неуважительного или провокационного поведения по отношению к ней.<br><br>
+      2. Запрещены оскорбления игроков, переходы на личности, унижение достоинства, а также оскорбления родственников и близких лиц.<br><br>
+      3. Запрещено чрезмерное использование нецензурной, обсценной и вульгарной лексики, а также завуалированный мат в чате.<br><br>
+      4. Запрещено обсуждение политики в любом виде и в любом контексте.<br><br>
+      5. Запрещены спам, флуд и засорение чата бессмысленными сообщениями.<br><br>
+      6. Запрещено использование читов, макросов, стороннего программного обеспечения, а также чит-текстурпаков, дающих игровое преимущество.<br><br>
+      7. Запрещено использование багов, дюпов, эксплойтов и иных недоработок сервера в личных целях.<br><br>
+      8. Запрещено гриферство в любых его проявлениях.<br><br>
+      9. Запрещено нанесение урона другим игрокам вне предусмотренных сервером механик.<br><br>
+      10. Запрещены воровство, разрушение построек и убийства игроков.<br><br>
+      11. PvP запрещено во всех зонах сервера, за исключением специально отведённой арены.<br><br>
+      12. Решение главы администрации является окончательным и не подлежит оспариванию.<br><br>
+      13. Запрещены попытки обмана администрации, введение её в заблуждение, а также сокрытие совершённых нарушений.<br><br>
+      14. Администрация вправе выдать наказание, исходя из конкретной ситуации и степени нарушения.<br><br>
+      15. Незнание правил не освобождает игрока от ответственности.<br><br>
+      16. Правила сервера могут быть изменены без предварительного уведомления.<br><br>
+      17. Администрация не несёт ответственности за утерю ресурсов, предметов и построек игроков.<br><br>
+      18. Играя на сервере, игрок автоматически соглашается со всеми правилами, а также с политикой конфиденциальности и условиями использования.
+    </div>
+    <div style="display:flex; justify-content: space-between; margin-top:10px;">
+      <div class="up-btn" onclick="scrollRulesTop()">↑ Наверх</div>
+      <div class="up-btn" onclick="closeRules()">← Главное меню</div>
+    </div>
+  </div>
+</div>
+
+<!-- DONAT -->
+<div class="page hidden" id="donat">
+  <div class="container donat-container">
+    <div class="donat-square">
+      <div class="donat-info">
+        <div class="donat-title"><i class="fa-solid fa-circle-check"></i> Разбан</div>
+        <div class="price-discount">
+          <div class="donat-price">799₽</div>
+          <div class="donat-discount">-30%</div>
+        </div>
+      </div>
+      <a href="https://t.me/SanyaDur" target="_blank" class="btn">Купить</a>
+    </div>
+
+    <div class="donat-square">
+      <div class="donat-info">
+        <div class="donat-title"><i class="fa-solid fa-microphone-slash"></i> Размут</div>
+        <div class="price-discount">
+          <div class="donat-price">299₽</div>
+          <div class="donat-discount">-10%</div>
+        </div>
+      </div>
+      <a href="https://t.me/SanyaDur" target="_blank" class="btn">Купить</a>
+    </div>
+
+    <div class="donat-square"></div>
+    <div class="donat-square"></div>
+    <div class="donat-square"></div>
+    <div class="donat-square"></div>
+
+    <div class="up-btn" onclick="closeDonat()">← Главное меню</div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById("weather");
+const ctx = canvas.getContext("2d");
+let w,h,particles=[],mode="rain";
+
+function resize(){w=canvas.width=innerWidth; h=canvas.height=innerHeight;}
+window.addEventListener("resize", resize);
+resize();
+
+function createParticles(type){
+  particles=[];
+  for(let i=0;i<120;i++){
+    particles.push({
+      x:Math.random()*w,
+      y:Math.random()*h,
+      r:type==="snow"?Math.random()*2+1:0,
+      l:type==="rain"?Math.random()*6+6:0,
+      sx:type==="snow"? (Math.random()-0.5)*0.3:0,
+      sy:type==="snow"?Math.random()*0.6+0.4:Math.random()*1.2+1
+    });
+  }
+}
+
+function draw(){
+  ctx.clearRect(0,0,w,h);
+  if(mode==="off") return;
+  particles.forEach(p=>{
+    if(mode==="snow"){
+      ctx.fillStyle="rgba(255,255,255,0.8)";
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fill();
+      p.x+=p.sx;
+      p.y+=p.sy;
+    }else{
+      ctx.strokeStyle="rgba(255,255,255,0.6)";
+      ctx.beginPath();
+      ctx.moveTo(p.x,p.y);
+      ctx.lineTo(p.x,p.y+p.l);
+      ctx.stroke();
+      p.y+=p.sy;
+    }
+    if(p.y>h){p.y=-10; p.x=Math.random()*w;}
+  });
+  requestAnimationFrame(draw);
+}
+
+function setWeather(type){mode=type;if(type!=="off"){createParticles(type);draw();}}
+
+const main=document.getElementById("main");
+const rules=document.getElementById("rules");
+const donat=document.getElementById("donat");
+
+function openRules(){main.classList.add("hidden");rules.classList.remove("hidden");window.scrollTo(0,0);}
+function closeRules(){rules.classList.add("hidden");main.classList.remove("hidden");window.scrollTo(0,0);}
+function scrollRulesTop(){rules.querySelector(".rules").scrollTop=0;}
+
+function openDonat(){main.classList.add("hidden");donat.classList.remove("hidden");window.scrollTo(0,0);}
+function closeDonat(){donat.classList.add("hidden");main.classList.remove("hidden");window.scrollTo(0,0);}
+
+setWeather("rain");
+</script>
+
+</body>
+</html>
