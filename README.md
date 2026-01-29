@@ -1,2 +1,2 @@
-# SenkCraft-Server
-Senk Craft server Minecraft
+# SenkCraft
+Senk Craft 
